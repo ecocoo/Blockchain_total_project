@@ -52,8 +52,11 @@
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
+    "eslint": "^9",
+    "eslint-config-next": "latest",
     "husky": "^9.1.6",
-    "lint-staged": "^15.2.10"
+    "lint-staged": "^15.2.10",
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=20.18.3"
