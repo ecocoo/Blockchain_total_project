@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useAccount, useContractRead, useContractWrite, usePublicClient } from "wagmi";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 
+// Главная страница приложения для голосования
 export default function Home() {
   const { address, isConnected } = useAccount();
   const [selectedYearIndex, setSelectedYearIndex] = useState<number | null>(null);
@@ -12,8 +13,10 @@ export default function Home() {
 
   const publicClient = usePublicClient();
 
+  // Получение информации о развернутом контракте
   const { data: contractInfo } = useDeployedContractInfo("BestYearForGamesVoting");
 
+  // Чтение информации о голосовании с контракта
   const {
     data: votingInfo,
     refetch: refetchVotingInfo,
@@ -25,19 +28,22 @@ export default function Home() {
     args: [],
   });
 
-  const { data: hasVoted, refetch: refetchHasVoted } = useContractRead<boolean>({
+  // Проверка, проголосовал ли уже текущий пользователь
+  const { data: hasVoted, refetch: refetchHasVoted } = useContractRead({
     address: contractInfo?.address,
     abi: contractInfo?.abi,
     functionName: "hasAddressVoted",
     args: address ? [address] : undefined,
   });
 
-  const { writeContractAsync } = useContractWrite();
+  const { writeContractAsync } = useContractWrite(); // Хук для записи в контракт
 
+  // Эффект для загрузки сохраненного голоса
   useEffect(() => {
     if (address) {
       const savedVote = localStorage.getItem(`vote_${address}`);
-      if (hasVoted === false) {
+      const hasVotedBool = hasVoted as boolean | undefined;
+      if (hasVotedBool === false) {
         setUserVotedYearIndex(null);
       } else if (savedVote) {
         const parsedVote = parseInt(savedVote, 10);
@@ -48,14 +54,16 @@ export default function Home() {
     }
   }, [address, hasVoted]);
 
+  // Функция для отправки голоса
   const handleVote = async () => {
-    const hasVotedBool = Boolean(hasVoted);
+    const hasVotedBool = hasVoted as boolean;
     if (!isConnected || hasVotedBool || selectedYearIndex === null || !contractInfo) {
       return;
     }
     setIsProcessing(true);
 
     try {
+      // Вызов функции vote на контракте
       const hash = await writeContractAsync({
         address: contractInfo.address,
         abi: contractInfo.abi,
@@ -63,12 +71,14 @@ export default function Home() {
         args: [BigInt(selectedYearIndex)],
       });
 
+      // Ожидание подтверждения транзакции
       if (publicClient && hash) {
         await publicClient.waitForTransactionReceipt({
           hash: hash as `0x${string}`,
           confirmations: 1,
         });
 
+        // Сохранение голоса
         if (address) {
           localStorage.setItem(`vote_${address}`, selectedYearIndex.toString());
           setUserVotedYearIndex(selectedYearIndex);
@@ -116,11 +126,13 @@ export default function Home() {
 
   const { options, votes, endTime, isActive, totalVotes } = votingData;
 
+  // Функция для расчета процента голосов
   const getVotePercentage = (voteCount: number) => {
     if (totalVotes === 0) return 0;
     return (voteCount / totalVotes) * 100;
   };
 
+  // Расчет оставшегося времени голосования
   const timeLeft = useMemo(() => {
     if (!endTime || endTime === 0) {
       return { days: 0, hours: 0, minutes: 0 };
@@ -138,12 +150,14 @@ export default function Home() {
     };
   }, [endTime]);
 
+  // Проверка, завершилось ли голосование
   const isVotingEnded = !isActive || (timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0);
   const hasVotedBool = Boolean(hasVoted);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
+        {/* Панель статуса */}
         <div className="mb-6 p-4 bg-gray-800/50 rounded-xl border border-gray-700">
           <div className="flex items-center justify-center gap-4">
             <div className={`flex items-center gap-2 ${contractInfo ? "text-green-400" : "text-yellow-400"}`}>
@@ -160,6 +174,7 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Заголовок и информация о подключении */}
         <header className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">🎮 Best Year for Video Games (2015-2025)</h1>
           <p className="text-lg md:text-xl text-gray-300 mb-2">Vote for the peak year of gaming history!</p>
@@ -169,12 +184,14 @@ export default function Home() {
               : "🔗 Connect your wallet to vote"}
           </p>
 
+          {/* Отображение, если пользователь уже проголосовал */}
           {hasVotedBool && userVotedYearIndex !== null && (
             <div className="mt-4 inline-block bg-green-900/30 text-green-400 px-4 py-2 rounded-lg border border-green-700">
               ✅ You voted for <span className="font-bold text-xl">{2015 + userVotedYearIndex}</span>
             </div>
           )}
 
+          {/* Отображение, если голосование завершено */}
           {isVotingEnded && (
             <div className="mt-4 inline-block bg-red-900/30 text-red-400 px-4 py-2 rounded-lg border border-red-700">
               ⏰ Voting has ended
@@ -182,6 +199,7 @@ export default function Home() {
           )}
         </header>
 
+        {/* Панель статистики */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-gray-800/50 p-5 rounded-xl border border-gray-700">
             <div className="text-gray-400 mb-1 text-sm font-medium">Total Votes</div>
@@ -203,6 +221,7 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Сетка годов для голосования */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-8">
           {options.map((year: string, index: number) => {
             const votesForYear = votes[index] || 0;
@@ -252,6 +271,7 @@ export default function Home() {
           })}
         </div>
 
+        {/* Кнопка отправки голоса */}
         <div className="text-center">
           <button
             onClick={handleVote}

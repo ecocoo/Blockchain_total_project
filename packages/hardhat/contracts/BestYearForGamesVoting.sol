@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+// Контракт для голосования за лучший год видеоигр
 contract BestYearForGamesVoting {
+    // Константы для названия и описания голосования
     string public constant TITLE = "Best Year for Video Games (2015-2025)";
     string public constant DESCRIPTION = "Vote for the best year in gaming history (2015-2025).";
     uint256 public constant VOTING_DURATION = 30 days;
     uint256 public constant TOTAL_YEARS = 11;
     
+    // Структура для хранения данных голосования
     struct Voting {
         uint256 endTime;
         bool isActive;
@@ -16,19 +19,23 @@ contract BestYearForGamesVoting {
     
     Voting public voting;
 
+    // Событие при голосовании
     event Voted(address indexed voter, uint256 yearIndex);
 
+    // Модификатор для проверки активности голосования
     modifier onlyActive() {
         require(voting.isActive, "Voting is not active");
         require(block.timestamp <= voting.endTime, "Voting has ended");
         _;
     }
 
+    // Конструктор: устанавливает время окончания голосования
     constructor() {
         voting.endTime = block.timestamp + VOTING_DURATION;
         voting.isActive = true;
     }
 
+    // Функция для голосования за конкретный год
     function vote(uint256 _yearIndex) external onlyActive {
         require(!voting.hasVoted[msg.sender], "You have already voted");
         require(_yearIndex < TOTAL_YEARS, "Invalid year index (0-10)");
@@ -39,6 +46,7 @@ contract BestYearForGamesVoting {
         emit Voted(msg.sender, _yearIndex);
     }
 
+     // Получение полной информации о голосовании
     function getVotingInfo() external view returns (
         uint256 endTime,
         bool isActive,
@@ -58,10 +66,12 @@ contract BestYearForGamesVoting {
         );
     }
 
+    // Проверка, проголосовал ли конкретный адрес
     function hasAddressVoted(address _voter) external view returns (bool) {
         return voting.hasVoted[_voter];
     }
 
+    // Получение года по индексу (для отображения на фронтенде)
     function getYearByIndex(uint256 _index) external pure returns (string memory) {
         require(_index < TOTAL_YEARS, "Invalid index");
         
