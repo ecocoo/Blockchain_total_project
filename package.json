@@ -52,8 +52,9 @@
   },
   "packageManager": "yarn@3.2.3",
   "devDependencies": {
-    "eslint": "^9",
-    "eslint-config-next": "latest",
+    "@next/eslint-plugin-next": "^16.0.10",
+    "eslint": "latest",
+    "eslint-config-next": "^16.0.10",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "prettier": "^3.7.4",
