@@ -56,6 +56,8 @@
     "eslint-config-next": "latest",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
+    "prettier": "^3.7.4",
+    "prettier-plugin-solidity": "^2.2.0",
     "typescript": "^5.9.3"
   },
   "engines": {

@@ -1021,6 +1021,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bytecodealliance/preview2-shim@npm:0.17.2":
+  version: 0.17.2
+  resolution: "@bytecodealliance/preview2-shim@npm:0.17.2"
+  checksum: 444c243dc5c26b8e8dffb011e24b591f51c74c3e4daf0bab2b5aeeac988ff7bfcfbc7a7f461194e85259e3fe84ba53d23dbe8992eaf0da80cdd35b4626c62577
+  languageName: node
+  linkType: hard
+
 "@chainsafe/is-ip@npm:^2.0.1":
   version: 2.1.0
   resolution: "@chainsafe/is-ip@npm:2.1.0"
@@ -3642,6 +3649,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nomicfoundation/slang@npm:1.3.0":
+  version: 1.3.0
+  resolution: "@nomicfoundation/slang@npm:1.3.0"
+  dependencies:
+    "@bytecodealliance/preview2-shim": 0.17.2
+  checksum: 6add0c3eafc0357995f7ce605469ae62e585079539224b88f8342363e4ca732664f12347e009af884f00b0f1f3c0291f4cf3b8e047b9806823fa003f1017fafc
+  languageName: node
+  linkType: hard
+
 "@nomicfoundation/solidity-analyzer-darwin-arm64@npm:0.1.2":
   version: 0.1.2
   resolution: "@nomicfoundation/solidity-analyzer-darwin-arm64@npm:0.1.2"
@@ -5966,7 +5982,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solidity-parser/parser@npm:^0.20.1":
+"@solidity-parser/parser@npm:^0.20.1, @solidity-parser/parser@npm:^0.20.2":
   version: 0.20.2
   resolution: "@solidity-parser/parser@npm:0.20.2"
   checksum: 5623e9b5863d59aab50f0fc98fe81a2b693e64feb29e2cf011a826d0e89374bbb6dfaf3fce48ac5c462251c792042f47805ba2004993182b717314e7d7292cd4
@@ -16387,7 +16403,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:*, prettier@npm:^3.5.3":
+"prettier-plugin-solidity@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "prettier-plugin-solidity@npm:2.2.0"
+  dependencies:
+    "@nomicfoundation/slang": 1.3.0
+    "@solidity-parser/parser": ^0.20.2
+    semver: ^7.7.3
+  peerDependencies:
+    prettier: ">=3.0.0"
+  checksum: c5e7a27e5f4795f8fc336c8ed6069cd221aaca3a725c5165ad39636c1ef9ed31ab9d5a19a9ef8b7782284fbfcdb1ddb13bdfd546671255bbf3ee38daa8da187d
+  languageName: node
+  linkType: hard
+
+"prettier@npm:*, prettier@npm:^3.5.3, prettier@npm:^3.7.4":
   version: 3.7.4
   resolution: "prettier@npm:3.7.4"
   bin:
@@ -17319,6 +17348,8 @@ __metadata:
     eslint-config-next: latest
     husky: ^9.1.6
     lint-staged: ^15.2.10
+    prettier: ^3.7.4
+    prettier-plugin-solidity: ^2.2.0
     typescript: ^5.9.3
   languageName: unknown
   linkType: soft
