@@ -1,88 +1,90 @@
-# 🏗 Scaffold-ETH 2
+# Децентрализованное голосование: Best Year for Video Games (2015–2025) (Лучший год для видеоигр)
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+## Идея проекта:
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+Создать приложение, позволяющее пользователям проголосовать за лучший год в истории видеоигр в период с 2015 по 2025.
 
-⚙️ Built using NextJS, RainbowKit, Foundry/Hardhat, Wagmi, Viem, and Typescript.
+## Смарт-контракт:
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+### Контракт `BestYearForGamesVoting` отвечает за:
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+- хранение голосов;
+- контроль времени голосования (30 дней);
+- защиту от повторного голосования;
+- предоставление данных для фронтенда.
 
-## Requirements
+### Особенности контракта:
 
-Before you begin, you need to install the following tools:
+- Каждый адрес может проголосовать только один раз.
+- Голосование автоматически завершается по времени.
+- Все данные (голоса, статус, таймер) доступны публично.
+- Используется массив фиксированного размера для годов (2015–2025).
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+## Тесты
 
-## Quickstart
+Для контракта были реализованы следующие тесты:
 
-To get started with Scaffold-ETH 2, follow the steps below:
+- Деплой контракта
+- Получение года по индексу
+- Голосование
+- Ограничение времени голосования
+- Получение информации о голосовании
+- Генерация событий
+- Крайние случаи
 
-1. Install the latest version of Scaffold-ETH 2
+## UX
 
-```
-npx create-eth@latest
-```
+### Основные принципы
 
-This command will install all the necessary packages and dependencies, so it might take a while.
+Пользователь всегда видит:
 
-> [!NOTE]
-> You can also initialize your project with one of our extensions to add specific features or starter-kits. Learn more in our [extensions documentation](https://docs.scaffoldeth.io/extensions/).
+- активность голосования;
+- оставшееся время;
+- общее число голосов;
+- свой статус (проголосовал / нет).
 
-2. Run a local network in the first terminal:
+Голосование происходит в 2 шага:
 
-```
-yarn chain
-```
+- выбор года;
+- подтверждение транзакции.
 
-This command starts a local Ethereum network that runs on your local machine and can be used for testing and development. Learn how to [customize your network configuration](https://docs.scaffoldeth.io/quick-start/environment#1-initialize-a-local-blockchain).
+Интерфейс блокирует действия, которые невозможны:
 
-3. On a second terminal, deploy the test contract:
+- нельзя голосовать дважды;
+- нельзя голосовать после окончания времени;
+- нельзя отправить пустой голос.
 
-```
-yarn deploy
-```
+### Структура странцы
 
-This command deploys a test smart contract to the local network. You can find more information about how to customize your contract and deployment script in our [documentation](https://docs.scaffoldeth.io/quick-start/environment#2-deploy-your-smart-contract).
+#### Верхняя панель статуса
 
-4. On a third terminal, start your NextJS app:
+- готовность контракта;
+- активность голосования (Active / Ended).
 
-```
-yarn start
-```
+#### Заголовок и информация о пользователе
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+- Название голосования.
+- Краткое описание.
+- Адрес подключенного кошелька.
+- Сообщение о выбранном пользователем годе (если он уже проголосовал).
 
-**What's next**:
+#### Панель статистики
 
-Visit the [What's next section of our docs](https://docs.scaffoldeth.io/quick-start/environment#whats-next) to learn how to:
+- Общее число голосов.
+- Оставшееся время (дни / часы / минуты).
+- Проголосовал ли пользователь.
 
-- Edit your smart contracts
-- Edit your deployment scripts
-- Customize your frontend
-- Edit the app config
-- Writing and running tests
-- [Setting up external services and API keys](https://docs.scaffoldeth.io/deploying/deploy-smart-contracts#configuration-of-third-party-services-for-production-grade-apps)
+#### Сетка годов
 
-## Documentation
+Каждый год представлен в виде карточки:
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn all the technical details and guides of Scaffold-ETH 2.
+- Номер года;
+- количество голосов;
+- процент от общего числа;
+- прогресс-бар.
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+Состояния карточек:
 
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+- выбранный год;
+- год, за который пользователь проголосовал;
+- недоступные (после голосования или окончания времени).
