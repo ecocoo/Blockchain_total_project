@@ -6,6 +6,8 @@
 
 ## Смарт-контракт:
 
+![alt text](image.png)
+
 ### Контракт `BestYearForGamesVoting` отвечает за:
 
 - хранение голосов;
